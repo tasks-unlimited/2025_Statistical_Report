@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasks Unlimited Annual Statistical Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+ :root {
+ --navy: #244876;
+ --navy-light: #2e5a8f;
+ --orange: #e96626;
+ --orange-light: #f4955e;
+ --orange-glow: rgba(233,102,38,0.12);
+ --teal: #359fa5;
+ --teal-light: #5bbcc2;
+ --teal-soft: #e8f5f6;
+ --white: #ffffff;
+ --cream: #faf9f7;
+ --warm-gray: #4a5568;
+ --mid-gray: #718096;
+ --light-gray: #e2e8f0;
+ --softest-gray: #f7f8fa;
+ --card-shadow: 0 4px 24px rgba(36,72,118,0.07), 0 1.5px 6px rgba(36,72,118,0.04);
+ --card-shadow-hover: 0 8px 40px rgba(36,72,118,0.12), 0 2px 10px rgba(36,72,118,0.06);
+ --radius: 20px;
+--radius-sm: 14px;
+ --radius-xs: 10px;
+ }
+
+ /* Preloader Styles */
+ #page-preloader { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--white); z-index: 99999; transition: opacity 0.6s ease-out; }
+ #page-preloader.is-hidden { opacity: 0; pointer-events: none; }
+
+ * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+ html { scroll-behavior: smooth; }
+ [id] { scroll-margin-top: calc(var(--sticky-offset, 60px) + 24px); }
+ 
+ #glossary [id] { scroll-margin-top: calc(var(--sticky-offset, 60px) + 170px); }
+ #glossary-index.is-compact ~ [id] { scroll-margin-top: calc(var(--sticky-offset, 60px) + 80px); }
+ 
+ body {
+ font-family: 'Open Sans', sans-serif;
+ background: var(--cream);
+ color: var(--warm-gray);
+ line-height: 1.6;
+ -webkit-font-smoothing: antialiased;
+ }
+ h1, h2, h3, h4, h5 {
+ font-family: 'Montserrat', sans-serif;
+ color: var(--navy);
+ line-height: 1.25;
+ margin-bottom: 10px;
+ }
+ h1 { font-size: 28px; font-weight: 800; }
+ h2 { font-size: 22px; font-weight: 700; }
+ h3 { font-size: 18px; font-weight: 700; margin-top: 20px;}
+ h4 { font-size: 16px; font-weight: 600; margin-top: 15px;}
+ 
+ ul { margin-left: 20px; margin-bottom: 15px; }
+ p { margin-bottom: 15px; }
+
+ /* ─── ANIMATIONS ─── */
+ @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+ @keyframes countPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+ .animate-in { opacity: 0; }
+ .animate-in.is-visible { animation: fadeInUp 0.7s ease-out both; }
+ .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; }
+ .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+ .delay-5 { animation-delay: 0.5s; } .delay-6 { animation-delay: 0.6s; }
+ 
+ /* ─── LAYOUT ─── */
+ .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+ 
+ /* ─── HERO ─── */
+ .hero {
+ background: linear-gradient(135deg, var(--navy) 0%, #1a3a5c 40%, var(--teal) 100%);
+ padding: 56px 24px 48px; text-align: center; position: relative; overflow: hidden;
+ width: 100vw; margin-left: calc(50% - 50vw); border-radius: 0;
+ }
+ .hero::before {
+ content: ''; position: absolute; top: -60%; right: -20%; width: 500px; height: 500px;
+ background: radial-gradient(circle, rgba(233,102,38,0.15) 0%, transparent 70%); border-radius: 50%;
+ }
+ .hero::after {
+ content: ''; position: absolute; bottom: -40%; left: -10%; width: 400px; height: 400px;
+ background: radial-gradient(circle, rgba(53,159,165,0.2) 0%, transparent 70%); border-radius: 50%;
+ }
+ .hero-inner { position: relative; z-index: 1; }
+ .hero-logo { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: 6px; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-bottom: 8px; }
+ .hero-subtitle { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 22px; color: var(--white); opacity: 0.92; margin-bottom: 28px; }
+ .hero-number { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 96px; color: var(--white); line-height: 1; margin-bottom: 8px; text-shadow: 0 4px 30px rgba(255, 255, 255, 0.4); animation: countPulse 3s ease-in-out infinite; }
+ .hero-label { font-family: 'Open Sans', sans-serif; font-weight: 400; font-size: 17px; color: rgba(255,255,255,0.85); max-width: 480px; margin: 0 auto; line-height: 1.5; }
+
+ .section-stripe { width: 100vw; margin-left: calc(50% - 50vw); padding: 40px 0 60px; margin-top: -20px; }
+ @media screen and (max-width: 900px) { .section-stripe { width: auto; margin-left: 0; padding: 20px 0; background: transparent !important; } }
+
+ .section-header { display: flex; align-items: center; gap: 14px; margin: 48px 0 28px; }
+ .section-header .icon-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+ .section-header h2 { font-size: 20px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 0; }
+
+ /* ─── CARDS & GRIDS ─── */
+ .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--card-shadow); padding: 28px; transition: box-shadow 0.3s ease, transform 0.3s ease; margin-bottom: 20px; }
+ .card:hover { box-shadow: var(--card-shadow-hover); transform: translateY(-3px); }
+ .card-title { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 12px; border-bottom: 2px solid var(--softest-gray); padding-bottom: 8px; }
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+ .demo-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+
+ /* Web-only centering and mobile carousel */
+ @media screen {
+    /* Centering the bottom two charts on desktop */
+    .demo-grid-2 { display: flex; justify-content: center; flex-wrap: wrap; }
+    .demo-grid-2 .card { flex: 0 1 calc(50% - 10px); max-width: 530px; }
+
+    /* Transition to Swiping Carousel for small screens */
+    @media (max-width: 750px) {
+        .demo-grid, .demo-grid-2 {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 15px !important;
+            padding: 10px 20px 25px !important;
+            margin: 0 -24px !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+        }
+        .demo-grid::-webkit-scrollbar, .demo-grid-2::-webkit-scrollbar { display: none; } /* Hide scrollbar for Chrome/Safari */
+        
+        .demo-grid .card, .demo-grid-2 .card {
+            flex: 0 0 85% !important; /* Shows a peek of the next chart to encourage swiping */
+            scroll-snap-align: center !important;
+            margin-bottom: 0 !important;
+        }
+    }
+ }
+
+ .outcome-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px; }
+
+ .admit-hero-card { background: linear-gradient(135deg, var(--orange), #d4551b); border-radius: var(--radius); padding: 32px 24px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 6px 30px rgba(233,102,38,0.25); transition: transform 0.3s ease; }
+ .admit-hero-card:hover { transform: translateY(-3px); }
+ .admit-hero-num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 64px; color: var(--white); line-height: 1; margin: 0; border: none;}
+ .admit-hero-label { font-size: 16px; color: rgba(255,255,255,0.9); margin-top: 8px; line-height: 1.5; font-weight: 600; margin: 0;}
+
+ .outcome-card { border-radius: var(--radius); padding: 28px 20px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; overflow: hidden; }
+ .outcome-card:hover { transform: translateY(-4px); }
+ .outcome-card::before { content: ''; position: absolute; top: -30px; right: -30px; width: 80px; height: 80px; background: rgba(255,255,255,0.12); border-radius: 50%; }
+ .outcome-num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 36px; color: var(--white); line-height: 1.1; position: relative; margin: 0;}
+ .outcome-label { font-size: 13.5px; color: rgba(255,255,255,0.9); margin-top: 8px; line-height: 1.45; position: relative; }
+
+ /* ─── BAR CHARTS (NATIVE CSS) ─── */
+ .bar-row { display: flex; align-items: center; margin-bottom: 10px; }
+ .bar-label { width: 150px; font-size: 12.5px; color: var(--navy); flex-shrink: 0; text-align: right; padding-right: 14px; font-weight: 500; }
+ .bar-track { flex: 1; height: 22px; background: var(--softest-gray); border-radius: 12px; overflow: hidden; position: relative; }
+ .bar-fill { height: 100%; border-radius: 12px; transition: width 1.2s cubic-bezier(0.22, 0.61, 0.36, 1); display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; }
+ .bar-value { font-size: 11px; font-weight: 700; font-family: 'Montserrat', sans-serif; color: var(--white); white-space: nowrap; }
+ .prog-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; border-bottom: 1px solid var(--softest-gray); }
+ .prog-row:last-child { border-bottom: none; }
+ .prog-name { font-size: 13px; color: var(--warm-gray); }
+ .prog-num { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: var(--navy); background: var(--white); border-radius: 8px; padding: 3px 12px; }
+
+ /* ─── NAV & GLOSSARY ─── */
+ .top-nav { position: sticky; top: 0; z-index: 50; background: rgb(255, 255, 255); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255); }
+ .top-nav-inner { max-width: 1100px; margin: 0 auto; padding: 14px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+ .top-nav-brand { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: 1px; font-size: 12px; color: var(--navy); text-transform: uppercase; opacity: 0.9; }
+ .top-nav-links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+ .top-nav a { text-decoration: none; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--navy); background: rgba(36,72,118,0.06); border: 1px solid rgba(36,72,118,0.10); padding: 6px 12px; border-radius: 999px; transition: transform 0.2s ease, background 0.2s ease; }
+ .top-nav a:hover { transform: translateY(-1px); background: rgba(36,72,118,0.10); }
+
+.section-shell { padding: 0 0 22px; }
+
+/* Get Involved Section Styling */
+ .get-involved-grid { display: flex; justify-content: space-around; gap: 30px; margin-bottom: 10px; }
+ .get-involved-col { flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; }
+ 
+ /* Force transparency on icons to prevent black backgrounds */
+ .get-involved-col img { 
+    max-height: 120px; 
+    width: auto; 
+    margin-bottom: 15px; 
+    background-color: transparent !important; 
+    background: none !important; 
+    border: none !important; 
+    box-shadow: none !important;
+ }
+
+ /* Fancy Branding Button Style */
+ .fancy-style {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--navy) 0%, #1a3a5c 40%, var(--teal) 100%) !important;
+    color: var(--white) !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 700;
+    padding: 12px 32px;
+    border-radius: 999px;
+    text-decoration: none !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(36, 72, 118, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    margin: 10px 0;
+    text-align: center;
+ }
+ .fancy-style:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(36, 72, 118, 0.3); }
+ .fancy-style a { color: var(--white) !important; text-decoration: none !important; font-family: inherit !important; }
+ 
+ @media (max-width: 700px) {
+    .get-involved-grid { flex-direction: column; gap: 40px; }
+ }
+
+ :root{ --topnav-height: 80px; --sticky-gap: 20px; --sticky-offset: calc(var(--topnav-height) + var(--sticky-gap)); }
+ .top-nav-toggle { appearance: none; border: 1px solid rgba(36,72,118,0.10); background: rgba(36,72,118,0.06); color: var(--navy); font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 999px; cursor: pointer; display: none; align-items: center; gap: 8px; }
+ body.in-glossary .top-nav-toggle { display: inline-flex; }
+
+#glossary-index.glossary-index-card { position: sticky; top: var(--sticky-offset); z-index: 45; padding: 22px; margin-top: 0; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 10px 30px rgba(36,72,118,0.12); margin-bottom: 30px; }
+ #glossary-index .glossary-index-head { text-align: center; }
+ #glossary-index.is-compact .glossary-index-head { display: none; }
+ #glossary-index .glossary-index-actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+ #glossary-index.is-collapsed .glossary-dropdown-wrap { display: none; }
+
+/* Glossary Dropdown (Web) */
+ .glossary-dropdown-wrap { display: flex; justify-content: center; }
+ #glossary-dropdown { width: 100%; max-width: 400px; padding: 12px 16px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--navy); background-color: var(--softest-gray); border: 1px solid var(--light-gray); border-radius: var(--radius-sm); cursor: pointer; outline: none; transition: border-color 0.2s; appearance: none; -webkit-appearance: none; text-align: center; }
+ #glossary-dropdown option { text-align: center; }
+ #glossary-dropdown:focus { border-color: var(--teal); }
+ 
+ /* Glossary TOC (Print) */
+ .glossary-toc-wrap { display: none; }
+ .glossary-toc-wrap li { margin-bottom: 8px; border-bottom: 1px dashed var(--light-gray); padding-bottom: 4px; }
+ .glossary-toc-wrap a { text-decoration: none; color: var(--navy); font-weight: 600; font-size: 14px; }
+
+.jump-link { display: inline-block; margin-top: 8px; font-family: 'Montserrat', sans-serif; font-size: 13.5px; font-weight: 700; color: var(--teal); text-decoration: none; transition: color 0.2s ease; }
+ .jump-link:hover { color: var(--navy); }
+
+ /* Table Overrides */
+ .glossary-table-wrap { background: var(--white); border-radius: var(--radius); box-shadow: var(--card-shadow); padding: 22px; border: 1px solid rgba(255,255,255); overflow-x: auto; margin-bottom: 20px;}
+ table.glossary-table { width: 100%; border-collapse: collapse; font-size: 13.5px; color: var(--warm-gray); min-width: 600px;}
+ table.glossary-table thead th { font-family: 'Montserrat', sans-serif; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--navy); background: var(--softest-gray); border-bottom: 2px solid var(--light-gray); padding: 12px 10px; text-align: left; }
+ table.glossary-table tbody td { border-bottom: 1px solid var(--light-gray); padding: 10px 10px; }
+ table.glossary-table tbody tr:nth-child(even) td { background: rgba(250,249,247,0.5); }
+ 
+ /* Align all data columns (2nd column and beyond) to the center for a uniform, professional look */
+ table.glossary-table thead th:not(:first-child), 
+ table.glossary-table tbody td:not(:first-child) { text-align: center; }
+ 
+ .footer { text-align: center; padding: 36px 24px 32px; color: var(--mid-gray); font-size: 13px; font-style: italic; line-height: 1.6; }
+ .footer strong { color: var(--navy); font-style: normal; }
+
+ @media (max-width: 900px) { 
+    /* Maintain vertical stacking only between 900px and 751px (before carousel kicks in) */
+    @media (min-width: 751px) {
+        .demo-grid, .demo-grid-2 { grid-template-columns: 1fr; }
+    }
+    .outcome-grid { grid-template-columns: 1fr 1fr; } 
+    .hero-number { font-size: 64px; } 
+ }
+ @media (max-width: 600px) { .outcome-grid { grid-template-columns: 1fr; } .hero-number { font-size: 52px; } .hero-subtitle { font-size: 18px; } .bar-label { width: 110px; font-size: 11px; } }
+
+/* ─── PRINT STYLES ─── */
+ @page { size: letter; margin: 0.5in; }
+ 
+ @media print {
+ /* Base Page Resets */
+ body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: var(--white) !important; }
+.top-nav, #client_satisfaction_data_link, #client_satisfaction_link_text { display: none !important; }
+ .glossary-dropdown-wrap, .glossary-toc-wrap, #glossary-index { display: none !important; }
+ .jump-link { display: none !important; }
+
+ /* Strip all drop shadows globally for print */
+ * { box-shadow: none !important; text-shadow: none !important; }
+
+ /* Force all animations to complete instantly so unseen elements print perfectly */
+ .animate-in, .kinetic-num { opacity: 1 !important; transform: none !important; animation: none !important; }
+
+/* Force Page Break Before Glossary */
+ #glossary { break-before: page; page-break-before: always; }
+
+/* Compact Section Banners for Print */
+ div:has(> #glossary_header), div:has(> #service_data_header) { 
+    padding: 15px 24px !important; 
+    margin-bottom: 24px !important; 
+    border: none !important; 
+    outline: none !important; 
+ }
+ #glossary_header, #service_data_header { margin-bottom: 0 !important; }
+ #glossary_header + div, #service_data_header + div { display: none !important; }
+
+ /* Deepen Table Lines for Print Visibility */
+ .prog-row { border-bottom: 1.5px solid var(--navy) !important; }
+
+ /* Container Geometry */
+ .container { width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; }
+
+ /* Beautiful Rounded Hero */
+ .hero { 
+    padding: 32px 24px !important; 
+    width: 100% !important; 
+    margin: 0 0 24px 0 !important; 
+    border-radius: 24px !important; 
+ }
+ .hero::before, .hero::after { display: none !important; }
+ .hero-number { font-size: 64px !important; margin-bottom: 4px !important; }
+ .hero-subtitle { font-size: 16px !important; margin-bottom: 12px !important; }
+ .hero-label { font-size: 13px !important; max-width: 520px !important; margin: 0 auto !important; }
+
+/* Custom Page Breaks */
+ .print-page-break { break-before: page; page-break-before: always; }
+
+ /* Section Stripes Shaping */
+ .section-stripe { 
+    border-radius: 24px !important; 
+    padding: 17px 16px 17px !important; 
+    margin-top: 0 !important; /* Fixes the negative margin overlap on headers! */
+    margin-bottom: 24px !important; 
+    width: auto !important; /* Keeps it within margins */
+    margin-left: 0 !important; 
+ }
+ 
+ /* Header Adjustments */
+ .section-header { margin: 24px 0 14px !important; padding-top: 10px !important; }
+
+ /* Remove borders inside stripes for clean floating look */
+ .section-stripe .card, .section-stripe .admit-hero-card, .section-stripe .outcome-card { border: none !important; }
+
+ /* Grids: Forced to maintain web layout (4-col outcome, 3-col/2-col charts) */
+ .outcome-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 6px !important; margin-top: 0 !important; }
+ .demo-grid { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; }
+ .demo-grid-2 { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-top: 8px !important; }
+ 
+/* Make Chart Containers Smaller on Print so all 5 fit on one page */
+ #gender_table, #age_table, #education_table, #race_table, #primary_table { height: 175px !important; margin-top: 5px !important; margin-bottom: 5px !important; }
+ /* Canvas explicitly auto-sizes to container without CSS stretching to prevent oval skewing */
+ #gender_table canvas, #age_table canvas, #education_table canvas, #race_table canvas, #primary_table canvas { max-height: 100% !important; width: auto !important; height: auto !important; margin: 0 auto !important; display: block !important; }
+
+/* Prevent awkward page breaks mid-card and tighten padding */
+ .card { background: var(--white) !important; padding: 16px !important; margin-bottom: 12px !important; border: 1px solid rgba(226,232,240,0.9) !important; break-inside: avoid; page-break-inside: avoid; }
+ 
+ /* Specific Print Logic for Get Involved Icons & Text */
+ .get-involved-col img { width: 50% !important; height: auto !important; margin-bottom: 5px !important; }
+ .print-as-p { 
+    font-family: 'Open Sans', sans-serif !important; 
+    font-size: 13px !important; 
+    font-weight: 400 !important; 
+    margin: 0 !important; 
+    color: var(--warm-gray) !important; 
+    text-transform: none !important;
+    border: none !important;
+ }
+ .outcome-card { padding: 12px 8px !important; break-inside: avoid; page-break-inside: avoid; }
+ .admit-hero-card, .glossary-table-wrap { background: var(--white) !important; break-inside: avoid; page-break-inside: avoid; }
+.outcome-num { font-size: 28px !important; }
+ .outcome-label { font-size: 11px !important; }
+
+ /* High-Contrast Bar Graphs for Print */
+ .bar-track { background: var(--navy) !important; }
+ .bar-value { color: var(--white) !important; font-weight: 800 !important; }
+
+/* Apply specific ink-saving compact styling to Data/Glossary Cards */
+ #service-data .card, #glossary .card {
+    background: var(--white) !important;
+    border: 1px solid var(--teal) !important;
+    padding: 16px !important;
+    margin-bottom: 16px !important;
+ }
+
+ /* Glossary Tables (Navy Lines, No Scrollbars, Compact) */
+ .glossary-table-wrap {
+    overflow: visible !important; /* Kills the print scrollbar */
+    padding: 0 !important;
+    border: none !important;
+ }
+ table.glossary-table { min-width: 100% !important; font-size: 12px !important; }
+ table.glossary-table thead th {
+    border-bottom: 2px solid var(--navy) !important;
+    background: var(--white) !important;
+    padding: 8px 6px !important;
+ }
+ table.glossary-table tbody td {
+    border-bottom: 1px solid var(--navy) !important;
+    padding: 6px !important;
+ }
+ /* Remove alternate row shading for print to save ink */
+ table.glossary-table tbody tr:nth-child(even) td { background: var(--white) !important; }
+ }
+</style>
+</head>
+<body>
+
+<div id="page-preloader"></div>
+
+<nav class="top-nav" aria-label="Report navigation">
+    <div class="top-nav-inner">
+        <div id="top_nav_text" class="top-nav-brand">Tasks Unlimited · Annual Statistical Report</div>
+    <div class="top-nav-links">
+      <a href="#at-a-glance" style="background: var(--navy); color: var(--white); border-color: var(--navy);">At A Glance</a>
+      <a href="#service-data" style="background: var(--teal); color: var(--white); border-color: var(--teal);">Service Data</a>
+      <a href="#glossary" style="background: var(--orange); color: var(--white); border-color: var(--orange);">Glossary</a>
+      <button id="glossaryIndexToggle" class="top-nav-toggle" type="button" aria-controls="glossary-index" aria-expanded="true">
+        Index <span class="chev">▾</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="at-a-glance"></div>
+
+<div class="print-hero-container" style="background-color: var(--white); padding: 48px 24px 32px; text-align: center;">
+ <div id="logo_header"></div>
+ <h2 id="report_title" style="font-size: 36px; font-weight: 800; letter-spacing: 1px; margin: 0; background: linear-gradient(135deg, var(--navy) 0%, #1a3a5c 40%, var(--teal) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;"></h2>
+</div>
+
+<section class="hero">
+ <div class="hero-inner animate-in">
+ <div class="hero-logo" id="tagline"></div>
+ <div class="hero-subtitle" id="we_have_supported"></div>
+ <div class="hero-number" id="number_of_individuals_supported"></div>
+ <div class="hero-label" id="on_their_growth"></div>
+ </div>
+</section>
+
+<div class="container">
+    <div class="section-header animate-in delay-2" style="justify-content: center; margin-bottom: 24px; margin-top: 24px;">
+        <h2 style="margin: 0; background: linear-gradient(135deg, var(--navy) 0%, #1a3a5c 40%, var(--teal) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Key Outcomes</h2>
+    </div>
+</div>
+<div class="section-stripe" style="background: var(--white); padding-top: 20px; padding-bottom: 60px;">
+    <div class="container">
+        <div class="outcome-grid">
+            <div class="outcome-card animate-in delay-3" style="background:linear-gradient(135deg,var(--teal),#2a8a8f);box-shadow:0 6px 28px rgba(53,159,165,0.3);">
+                <div id="number_of_two" class="outcome-num"></div>
+                <div id="key_outcome_2" class="outcome-label"></div>
+            </div>
+            <div class="outcome-card animate-in delay-4" style="background:linear-gradient(135deg,var(--navy),#1c3a60);box-shadow:0 6px 28px rgba(36,72,118,0.3);">
+                <div id="number_of_three" class="outcome-num"></div>
+                <div id="key_outcome_3" class="outcome-label"></div>
+            </div>
+            <div class="outcome-card animate-in delay-5" style="background:linear-gradient(135deg,var(--orange),#d05520);box-shadow:0 6px 28px rgba(233,102,38,0.3);">
+                <div id="number_of_four" class="outcome-num"></div>
+                <div id="key_outcome_4" class="outcome-label"></div>
+            </div>
+            <div class="outcome-card animate-in delay-6" style="background:linear-gradient(135deg,var(--teal),var(--navy));box-shadow:0 6px 28px rgba(53,159,165,0.25);">
+                <div id="number_of_one" class="outcome-num"></div>
+                <div id="key_outcome_1" class="outcome-label"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="section-header animate-in delay-2" style="justify-content: center; margin-bottom: 24px; margin-top: 24px;">
+        <h2 id="new_connections_header" style="color: var(--navy); margin: 0;"></h2>
+    </div>
+</div>
+
+<div class="section-stripe" style="background: var(--navy);">
+    <div class="container">
+        <div class="demo-grid-2" style="margin-top: 0;">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="admit-hero-card animate-in delay-3" style="background: var(--white); flex: 1;">
+                    <h1 id="number_of_new_enrollments_from_outside_tasks" class="admit-hero-num" style="color: var(--navy);"></h1>
+                    <h4 id="new_enrollments_text_1" class="admit-hero-label" style="color: var(--orange);"></h4>
+                    <h5 id="new_enrollments_text_2" style="margin-top:12px; font-size: 16px; color: var(--teal); opacity: 0.8;"></h5>
+                </div>
+                <div class="card animate-in delay-4" style="margin-bottom: 0;">
+                    <div id="enrollment_by_county_header" class="card-title"></div>
+                    <ul id="number_of_enrollments_by_county" style="list-style-type: none; margin-left: 0;"></ul>
+                    <div id="enrollment_by_county_table"></div>
+                </div>
+            </div>
+            <div class="card animate-in delay-5" style="margin-bottom: 0;">
+                <div id="top_programs_enrolled_header" class="card-title"></div>
+                <ul id="number_of_enrollments" style="list-style-type: none; margin-left: 0;"></ul>
+                <div id="number_of_enrollments_table"></div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<div class="container print-page-break">
+    <div class="section-header animate-in delay-1" style="justify-content: center; margin-bottom: 24px; margin-top: 24px;">
+        <h2 style="color: var(--teal); margin: 0;">Who We Served</h2>
+    </div>
+</div>
+
+<div class="section-stripe" style="background: var(--teal);">
+    <div class="container">
+        <div class="demo-grid">
+            <div class="card animate-in delay-2" style="text-align: center;">
+                <div id="gender" class="card-title" style="border: none; margin-bottom: 4px; padding-bottom: 0;"></div>
+                <ul id="gender_number" style="list-style-type: none; margin-left: 0; padding-left: 0;"></ul>
+                <div id="gender_table"></div>
+            </div>
+            <div class="card animate-in delay-3" style="text-align: center;">
+                <div id="age" class="card-title" style="border: none; margin-bottom: 4px; padding-bottom: 0;"></div>
+                <ul id="age_info" style="list-style-type: none; margin-left: 0; padding-left: 0;"></ul>
+                <div id="age_table"></div>
+            </div>
+            <div class="card animate-in delay-4" style="text-align: center;">
+                <div id="education" class="card-title" style="border: none; margin-bottom: 4px; padding-bottom: 0;"></div>
+                <ul id="education_number" style="list-style-type: none; margin-left: 0; padding-left: 0;"></ul>
+                <div id="education_table"></div>
+            </div>
+        </div>
+        <div class="demo-grid-2">
+            <div class="card animate-in delay-4" style="text-align: center;">
+                <div id="primary" class="card-title" style="border: none; margin-bottom: 4px; padding-bottom: 0;"></div>
+                <ul id="primary_info" style="list-style-type: none; margin-left: 0; padding-left: 0;"></ul>
+                <div id="primary_table"></div>
+            </div>
+            <div class="card animate-in delay-5" style="text-align: center;">
+                <div id="race" class="card-title" style="border: none; margin-bottom: 4px; padding-bottom: 0;"></div>
+                <ul id="race_number" style="list-style-type: none; margin-left: 0; padding-left: 0;"></ul>
+                <div id="race_table"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="section-header animate-in delay-2" style="justify-content: center; margin-bottom: 24px; margin-top: 24px;">
+        <h2 style="color: var(--orange); margin: 0;">Client Satisfaction</h2>
+    </div>
+</div>
+<div class="section-stripe" style="background: var(--orange); padding-bottom: 40px;">
+    <div class="container">
+        <style>
+            .print-sat-qr { display: none; }
+            @media print {
+                .web-sat-iframe { display: none !important; }
+                .print-sat-qr { 
+                    display: flex !important; 
+                    flex-direction: column; 
+                    align-items: center; 
+                    justify-content: center; 
+                    text-align: center;
+                    padding: 12px 24px;
+                }
+            }
+        </style>
+
+<div class="card animate-in delay-3 web-sat-iframe" style="padding:0; border: 6px solid var(--white); margin-bottom: 0;">
+            <div style="height: 600px; overflow: hidden; width: 100%;">
+                <iframe 
+                    id="client_satisfaction_iframe"
+                    src="" 
+                    width="100%" 
+                    height="100%" 
+                    style="border: none; background: #ffffff;" 
+                    title="Client Satisfaction Survey Results">
+                </iframe>
+            </div>
+            <p id="client_satisfaction_link_text" style="padding: 15px; margin: 0; font-size: 14px; color: var(--mid-gray); text-align: center; border-top: 1px solid var(--light-gray);"></p>
+        </div>
+
+        <div class="card print-sat-qr" style="margin-bottom: 0;">
+            <img id="client_satisfaction_qr_img" src="" alt="Scan to view Client Satisfaction Data" style="max-width: 120px; height: auto; margin: 0 auto 12px;">
+            <h3 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Explore Our Client Satisfaction Data</h3>
+            <p style="color: var(--warm-gray); font-size: 14px; max-width: 480px; margin: 0 auto; line-height: 1.5;">Scan this QR code with your smartphone camera to view comprehensive, interactive insights and detailed feedback from our Client Satisfaction Survey.</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card animate-in delay-1" style="text-align: center; margin-top: 50px; margin-bottom: 40px;">
+        <div class="get-involved-grid">
+            <div class="get-involved-col">
+                <div id="support_link"></div>
+                <h2 id="support_text" class="print-as-p"></h2>
+            </div>
+            <div class="get-involved-col">
+                <div id="donate_link"></div>
+                <h2 id="donate_text" class="print-as-p"></h2>
+            </div>
+            <div class="get-involved-col">
+                <div id="volunteer_link"></div>
+                <h2 id="volunteer_text" class="print-as-p"></h2>
+            </div>
+        </div>
+        <div id="tasks_unlimited_website_link" style="margin-top: 15px; font-weight: 600;"></div>
+    </div>
+</div>
+
+<div class="container print-page-break">
+    <div class="animate-in delay-1" style="background: linear-gradient(135deg, var(--teal) 0%, #2a8a8f 100%); padding: 30px 24px; border-radius: 20px; margin: 40px 0 32px; text-align: center; box-shadow: 0 8px 24px rgba(53,159,165,0.25);">
+        <h2 id="service_data_header" style="font-size: 36px; color: var(--white); margin-bottom: 8px; font-weight: 800; letter-spacing: 1px; border:none;">Service Data</h2>
+        <div style="font-size: 15px; color: rgba(255,255,255,0.9);">Detailed program summaries and narratives</div>
+    </div>
+</div>
+
+<section id="service-data" class="section-shell">
+    <div id="dynamic-service-data" class="container">
+        </div>
+</section>
+
+<section id="glossary" class="section-shell">
+    <div class="container">
+        <div style="background: linear-gradient(135deg, var(--orange) 0%, #d4551b 100%); padding: 30px 24px; border-radius: 20px; margin: 40px 0 32px; text-align: center; box-shadow: 0 8px 24px rgba(233,102,38,0.25);">
+            <h2 id="glossary_header" style="font-size: 36px; color: var(--white); margin-bottom: 8px; font-weight: 800; letter-spacing: 1px; border:none;">Glossary</h2>
+            <div style="font-size: 15px; color: rgba(255,255,255,0.9);">Full data tables live here</div>
+        </div>
+
+        <div id="glossary-index" class="card glossary-index-card">
+            <div class="glossary-index-head">
+                <div id="glossary_index_title" class="card-title" style="border:none; margin:0; text-align:center; padding-bottom: 15px;">Glossary Index</div>
+            </div>
+            <div class="glossary-dropdown-wrap">
+                <select id="glossary-dropdown" aria-label="Select a glossary section">
+                    <option value="">Select a Section</option>
+                </select>
+            </div>
+            <div class="glossary-toc-wrap">
+                <ul id="glossary-toc" style="list-style-type: none; margin: 0; padding: 0;"></ul>
+            </div>
+        </div>
+
+        <div id="dynamic-glossary">
+            </div>
+    </div>
+</section>
+
+<div class="footer">
+ <strong>Tasks Unlimited</strong> · Empowering individuals with mental illness to achieve<br>
+ community integration, employment & independent living
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
