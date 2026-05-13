@@ -20,8 +20,8 @@ const donutChartsConfig = [
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        // Fetch main text_blocks data
-        const response = await fetch(GOOGLE_SHEETS_CSV_URL);
+        // Fetch main text_blocks data from the specific Master Sheet tab (Position 3)
+        const response = await fetch(`${GOOGLE_SHEETS_CSV_URL}&gid=428293558&single=true`);
         if (!response.ok) {
             throw new Error(`Failed to fetch data. HTTP Status: ${response.status}`);
         }
