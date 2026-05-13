@@ -295,10 +295,11 @@
  .container { width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; }
 
  /* Beautiful Rounded Hero */
+ .print-hero-container { padding: 20px 24px 15px !important; } /* Shrinks top logo area */
  .hero { 
-    padding: 32px 24px !important; 
+    padding: 20px 24px !important; 
     width: 100% !important; 
-    margin: 0 0 24px 0 !important; 
+    margin: 0 0 10px 0 !important; 
     border-radius: 24px !important; 
  }
  .hero::before, .hero::after { display: none !important; }
@@ -312,15 +313,15 @@
 /* Section Stripes Shaping */
  .section-stripe { 
     border-radius: 24px !important; 
-    padding: 10px 16px 17px !important; 
+    padding: 8px 16px 10px !important; 
     margin-top: 0 !important; /* Fixes the negative margin overlap on headers! */
-    margin-bottom: 24px !important; 
+    margin-bottom: 10px !important; 
     width: auto !important; /* Keeps it within margins */
     margin-left: 0 !important; 
  }
  
- /* Header Adjustments (Halved gap to cards) */
- .section-header { margin: 24px 0 5px !important; padding-top: 10px !important; }
+ /* Header Adjustments (Squeezed for Print) */
+ .section-header { margin: 10px 0 5px !important; padding-top: 0 !important; }
 
  /* Remove borders and shadows inside stripes for a clean floating look */
  .section-stripe .card, .section-stripe .admit-hero-card, .section-stripe .outcome-card { border: none !important; box-shadow: none !important; outline: none !important; }
@@ -338,9 +339,10 @@
 /* Prevent awkward page breaks mid-card and tighten padding */
  .card { background: var(--white) !important; padding: 16px !important; margin-bottom: 12px !important; border: 1px solid rgba(226,232,240,0.9) !important; break-inside: avoid; page-break-inside: avoid; }
  
- /* Specific Print Logic for Get Involved Icons & Text */
- .get-involved-col img { width: 50% !important; height: auto !important; margin-bottom: 5px !important; }
- .print-as-p { 
+/* Specific Print Logic for Get Involved Icons & Text */
+ div:has(> .get-involved-grid) { margin-top: 15px !important; margin-bottom: 15px !important; padding: 12px !important; }
+ .get-involved-col img { width: 45% !important; height: auto !important; margin-bottom: 5px !important; }
+ .print-as-p {
     font-family: 'Open Sans', sans-serif !important; 
     font-size: 13px !important; 
     font-weight: 400 !important; 
