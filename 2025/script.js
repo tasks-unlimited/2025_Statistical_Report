@@ -4,7 +4,7 @@
  * parses it, and dynamically populates the HTML document based on Unique_IDs.
  */
 
-const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQr6wegUTldLyoaq7qifjk7u3mAW0ixZkpCrSsqu5-WAr53OY-WcGHH1d9grbU7lUCmQ8HElBoh5FRj/pub?output=csv";
+// MASTER_SHEET_URL is now globally defined in update_link_here.js
 
 // IDs that should animate like rolling odometers
 const kineticIds = ['number_of_individuals_supported', 'number_of_one', 'number_of_two', 'number_of_three', 'number_of_four', 'number_of_new_enrollments_from_outside_tasks'];
@@ -20,8 +20,8 @@ const donutChartsConfig = [
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        // Fetch main text_blocks data from the specific Master Sheet tab (Position 3)
-        const response = await fetch(`${GOOGLE_SHEETS_CSV_URL}&gid=428293558&single=true`);
+        // Fetch main text_blocks data using the URL from update_link_here.js
+        const response = await fetch(MASTER_SHEET_URL);
         if (!response.ok) {
             throw new Error(`Failed to fetch data. HTTP Status: ${response.status}`);
         }
@@ -82,8 +82,9 @@ async function fetchAndRenderDonuts() {
     ];
 
     const fetchPromises = donutChartsConfig.map(async (chart) => {
-        // Append &gid=XXXXX&single=true to isolate the specific tab
-        const chartUrl = `${GOOGLE_SHEETS_CSV_URL}&gid=${chart.gid}&single=true`;
+        // Strip the Master GID and append the specific chart tab GID
+        const baseUrl = MASTER_SHEET_URL.split('&gid=')[0];
+        const chartUrl = `${baseUrl}&gid=${chart.gid}&single=true`;
         
         try {
             const res = await fetch(chartUrl);
@@ -331,7 +332,10 @@ function populateDOM(data) {
             // Speed Optimization: Only run the regex check if the text is short enough to actually be a URL
             const isImage = type === 'img' || (trimmedBody.length < 500 && trimmedBody.match(/\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/i));
             
-            if (standardTypes.includes(type) && existingElement.tagName.toLowerCase() !== type) {
+            // Shield hardcoded structural IDs so they never lose their CSS shapes/styles
+            const protectedIds = ['top_nav_button_1', 'top_nav_button_2', 'top_nav_button_3', 'title', 'top_nav_text'];
+
+            if (standardTypes.includes(type) && existingElement.tagName.toLowerCase() !== type && !protectedIds.includes(Unique_ID)) {
                 const newElement = document.createElement(type);
                 Array.from(existingElement.attributes).forEach(attr => newElement.setAttribute(attr.name, attr.value));
                 existingElement.replaceWith(newElement);
