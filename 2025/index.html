@@ -361,8 +361,8 @@
  .bar-track { background: var(--navy) !important; }
  .bar-value { color: var(--white) !important; font-weight: 800 !important; }
 
-/* Apply specific ink-saving compact styling to Data/Glossary Cards */
- #service-data .card, #glossary .card {
+/* Apply specific ink-saving compact styling to dynamic cards */
+ #dynamic-content-zone .card {
     background: var(--white) !important;
     border: 1px solid var(--teal) !important;
     padding: 16px !important;
@@ -600,42 +600,9 @@
     </div>
 </div>
 
-<div class="container print-page-break">
-    <div class="animate-in delay-1" style="background: linear-gradient(135deg, var(--teal) 0%, #2a8a8f 100%); padding: 30px 24px; border-radius: 20px; margin: 40px 0 32px; text-align: center; box-shadow: 0 8px 24px rgba(53,159,165,0.25);">
-        <h2 id="service_data_header" style="font-size: 36px; color: var(--white); margin-bottom: 8px; font-weight: 800; letter-spacing: 1px; border:none;">Service Data</h2>
-        <div style="font-size: 15px; color: rgba(255,255,255,0.9);">Detailed program summaries and narratives</div>
-    </div>
-</div>
-
-<section id="service-data" class="section-shell">
-    <div id="dynamic-service-data" class="container">
+<section id="dynamic-content-zone" class="section-shell">
+    <div id="dynamic-content-container" class="container">
         </div>
-</section>
-
-<section id="glossary" class="section-shell">
-    <div class="container">
-        <div style="background: linear-gradient(135deg, var(--orange) 0%, #d4551b 100%); padding: 30px 24px; border-radius: 20px; margin: 40px 0 32px; text-align: center; box-shadow: 0 8px 24px rgba(233,102,38,0.25);">
-            <h2 id="glossary_header" style="font-size: 36px; color: var(--white); margin-bottom: 8px; font-weight: 800; letter-spacing: 1px; border:none;">Glossary</h2>
-            <div style="font-size: 15px; color: rgba(255,255,255,0.9);">Full data tables live here</div>
-        </div>
-
-        <div id="glossary-index" class="card glossary-index-card">
-            <div class="glossary-index-head">
-                <div id="glossary_index_title" class="card-title" style="border:none; margin:0; text-align:center; padding-bottom: 15px;">Glossary Index</div>
-            </div>
-            <div class="glossary-dropdown-wrap">
-                <select id="glossary-dropdown" aria-label="Select a glossary section">
-                    <option value="">Select a Section</option>
-                </select>
-            </div>
-            <div class="glossary-toc-wrap">
-                <ul id="glossary-toc" style="list-style-type: none; margin: 0; padding: 0;"></ul>
-            </div>
-        </div>
-
-        <div id="dynamic-glossary">
-            </div>
-    </div>
 </section>
 
 <div class="container print-hide">
