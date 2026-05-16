@@ -30,9 +30,6 @@ const csvString = await response.text();
         const dataObjects = parseCSV(csvString);
         populateDOM(dataObjects);
 
-        // Build the Glossary Dropdown & TOC dynamically from the raw data
-        buildGlossaryIndex(dataObjects);
-
         // Fetch and render donut charts concurrently from the other tabs
         await fetchAndRenderDonuts();
 
@@ -234,31 +231,29 @@ function parseCSV(csvText) {
 }
 
 /**
- * 3. Data-to-DOM Mapping & Dynamic Routing
+ * 3. Data-to-DOM Mapping (Pure Sequential Architecture)
  */
 function populateDOM(data) {
-    const serviceContainer = document.getElementById('dynamic-service-data');
-    const glossaryContainer = document.getElementById('dynamic-glossary');
-
+    const dynamicContainer = document.getElementById('dynamic-content-container');
     let isDynamicZone = false;
-    let activeServiceCard = null;
-    let activeGlossaryCard = null;
     
-    // Table assembly tracking variables
+    let activeSectionWrapper = null;
+    let activeCard = null;
+    let activeIndexDropdown = null;
+    let activeIndexToc = null;
+    
     let activeTable = null;
     let activeTableParent = null; 
     let activeTr = null;
 
-    // Helper: Insert narrative elements safely above the jump link in the Service Card
-    function appendToServiceCard(el) {
-        if (!activeServiceCard) return;
-        const jumpLink = activeServiceCard.querySelector('.jump-link');
-        if (jumpLink) {
-            activeServiceCard.insertBefore(el, jumpLink);
-        } else {
-            activeServiceCard.appendChild(el);
-        }
-    }
+    // Palette for Dynamic Banners
+    const sectionStyles = {
+        'section1': 'background: linear-gradient(135deg, var(--navy) 0%, #1a3a5c 100%);',
+        'section2': 'background: linear-gradient(135deg, var(--teal) 0%, #2a8a8f 100%);',
+        'section3': 'background: linear-gradient(135deg, var(--orange) 0%, #d4551b 100%);',
+        'section4': 'background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);',
+        'section5': 'background: linear-gradient(135deg, var(--navy) 0%, var(--orange) 100%);'
+    };
 
     // Helper: Format raw text or list elements
     function formatText(el, type, content) {
@@ -278,17 +273,17 @@ function populateDOM(data) {
         const { Unique_ID, Element_Type, Content_Body } = item;
         if (!Unique_ID) return;
 
-// 1. Hardcoded Iframe Hooks
+        // 1. Hardcoded Iframe Hooks
         if (Unique_ID === 'client_satisfaction_qr_code') {
             const qrImg = document.getElementById('client_satisfaction_qr_img');
             if (qrImg && Content_Body.trim() !== '') qrImg.src = Content_Body.trim();
             return;
         }
 
-        // 2. Identify the exact moment the Dynamic Split Generation begins
+        // 2. Identify the exact moment the Sequential Generation begins
         if (Unique_ID === 'begin_dynamic_building_mode') {
             isDynamicZone = true;
-            return; // Skip rendering this marker
+            return;
         }
 
         // 3. Populate existing hardcoded elements (Hero, At-A-Glance)
@@ -363,188 +358,203 @@ function populateDOM(data) {
             if (!isDynamicZone) return;
         }
 
-        // 4. The Dynamic Brain: Generating Service Data & Glossary Cards on the fly
-        if (isDynamicZone && serviceContainer && glossaryContainer) {
+        // 4. THE DYNAMIC BRAIN (Pure Sequential Appending)
+        if (isDynamicZone && dynamicContainer) {
             let rawType = (Element_Type || '').toLowerCase();
-            let isDataRouteOverride = false;
             let isFancy = false;
             
-            const tableParts = ['table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th'];
-            
-            // Check for 'fancy' prefix
             if (rawType.startsWith('fancy')) {
                 isFancy = true;
                 rawType = rawType.replace('fancy', '');
             }
 
-            // Check for the 't' override prefix
-            if (rawType.startsWith('t') && !tableParts.includes(rawType) && rawType.length > 1) {
-                isDataRouteOverride = true;
-                rawType = rawType.substring(1); 
-            }
-            
-            const type = rawType;
+            // --- A. Dynamic Banners (section1-5) ---
+            if (sectionStyles[rawType]) {
+                // Creates a new bounded wrapper for the section to lock the sticky Index
+                activeSectionWrapper = document.createElement('div');
+                activeSectionWrapper.style.position = 'relative'; 
+                dynamicContainer.appendChild(activeSectionWrapper);
+                
+                // Reset the active trackers so they don't bleed into the next section
+                activeIndexDropdown = null;
+                activeIndexToc = null;
+                activeCard = null;
 
-            // H1 or H2: Generate cards
-            if (type === 'h1' || type === 'h2') {
-                if (isDataRouteOverride) {
-                    // VIP DATA ROUTE: Generate brand new card exclusively in the Glossary
-                    activeGlossaryCard = document.createElement('div');
-                    activeGlossaryCard.className = 'card';
-                    glossaryContainer.appendChild(activeGlossaryCard);
-
-                    const gHeader = document.createElement(type);
-                    gHeader.id = Unique_ID; 
-                    gHeader.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
-                    activeGlossaryCard.appendChild(gHeader);
-                    
-                    activeTable = null; // Reset table assembly memory
-                    return;
-                } else {
-                    // STANDARD ROUTE: Generate identical brand new cards in BOTH sections
-                    activeServiceCard = document.createElement('div');
-                    activeServiceCard.className = 'card animate-in delay-2';
-                    serviceContainer.appendChild(activeServiceCard);
-
-                    const sHeader = document.createElement(type);
-                    sHeader.className = 'card-title';
-                    sHeader.style.border = 'none';
-                    sHeader.style.marginBottom = '0';
-                    sHeader.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
-                    activeServiceCard.appendChild(sHeader);
-
-                    const jump = document.createElement('a');
-                    jump.href = '#' + Unique_ID;
-                    jump.className = 'jump-link';
-                    jump.innerText = 'See full tables in Glossary →';
-                    activeServiceCard.appendChild(jump);
-
-                    activeGlossaryCard = document.createElement('div');
-                    activeGlossaryCard.className = 'card';
-                    glossaryContainer.appendChild(activeGlossaryCard);
-
-                    const gHeader = document.createElement(type);
-                    gHeader.id = Unique_ID; 
-                    gHeader.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
-                    activeGlossaryCard.appendChild(gHeader);
-                    
-                    activeTable = null; // Reset table assembly memory
-                    return;
-                }
+                const banner = document.createElement('div');
+                banner.className = 'print-page-break animate-in delay-1';
+                banner.style = `${sectionStyles[rawType]} padding: 30px 24px; border-radius: 20px; margin: 40px 0 32px; text-align: center; box-shadow: 0 8px 24px rgba(36,72,118,0.25);`;
+                
+                const title = document.createElement('h2');
+                title.id = Unique_ID;
+                title.style = 'font-size: 36px; color: var(--white); margin-bottom: 0; font-weight: 800; letter-spacing: 1px; border:none;';
+                title.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
+                
+                banner.appendChild(title);
+                activeSectionWrapper.appendChild(banner);
+                return;
             }
 
-            // Table Components: Route exclusively to Glossary and nest intelligently
-            if (tableParts.includes(type) && activeGlossaryCard) {
-                if (type === 'table') {
-                    // Fallback: If you provide full Markdown inside the 'table' row, it builds the whole structure at once
+            // Fallback: If no section wrapper exists yet, create an invisible one
+            if (!activeSectionWrapper) {
+                activeSectionWrapper = document.createElement('div');
+                activeSectionWrapper.style.position = 'relative';
+                dynamicContainer.appendChild(activeSectionWrapper);
+            }
+
+            // --- B. The Sweeping Index ---
+            if (rawType === 'index') {
+                const indexCard = document.createElement('div');
+                indexCard.className = 'card glossary-index-card animate-in delay-2';
+                indexCard.style = 'position: sticky; top: var(--sticky-offset); z-index: 45; padding: 22px; margin-top: 0; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 10px 30px rgba(36,72,118,0.12); margin-bottom: 30px;';
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'card-title';
+                titleDiv.style = 'border:none; margin:0; text-align:center; padding-bottom: 15px;';
+                titleDiv.innerText = Content_Body ? Content_Body.replace(/^#+\s/, '') : 'Section Index';
+                indexCard.appendChild(titleDiv);
+
+                const dropWrap = document.createElement('div');
+                dropWrap.className = 'glossary-dropdown-wrap';
+                
+                const select = document.createElement('select');
+                select.className = 'dynamic-dropdown';
+                select.style = 'width: 100%; max-width: 400px; padding: 12px 16px; font-family: Montserrat, sans-serif; font-size: 14px; font-weight: 600; color: var(--navy); background-color: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius-sm); cursor: pointer; text-align: center;';
+                
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.innerText = 'Select a Topic...';
+                select.appendChild(defaultOpt);
+                
+                // Connect Dropdown scrolling
+                select.addEventListener('change', (e) => {
+                    const targetId = e.target.value;
+                    if (targetId) {
+                        const targetEl = document.getElementById(targetId);
+                        if (targetEl) {
+                            const yOffset = -240; 
+                            const y = targetEl.getBoundingClientRect().top + window.scrollY + yOffset;
+                            window.scrollTo({top: y, behavior: 'smooth'});
+                        }
+                        select.selectedIndex = 0;
+                    }
+                });
+
+                dropWrap.appendChild(select);
+                indexCard.appendChild(dropWrap);
+                
+                const tocWrap = document.createElement('div');
+                tocWrap.className = 'glossary-toc-wrap print-toc';
+                const tocUl = document.createElement('ul');
+                tocUl.style = 'list-style-type: none; margin: 0; padding: 0;';
+                tocWrap.appendChild(tocUl);
+                indexCard.appendChild(tocWrap);
+
+                activeSectionWrapper.appendChild(indexCard);
+                
+                // Arm the index tracking radar for the current section
+                activeIndexDropdown = select;
+                activeIndexToc = tocUl;
+                activeCard = null; 
+                return;
+            }
+
+            // --- C. White Cards (Triggered by H1/H2) ---
+            const isHeader = rawType === 'h1' || rawType === 'h2';
+            if (isHeader || (!activeCard && rawType !== 'table' && !['thead','tbody','tr','td','th','tfoot'].includes(rawType))) {
+                activeCard = document.createElement('div');
+                activeCard.className = 'card animate-in delay-2';
+                activeSectionWrapper.appendChild(activeCard);
+                activeTable = null; 
+            }
+
+            // --- D. Core Content Population ---
+            const tableParts = ['table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th'];
+            const textGroup = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'blockquote', 'ul', 'ol', 'li', 'hr', 'br', 'a', 'strong', 'em'];
+            const trimmedBody = Content_Body ? Content_Body.trim() : '';
+            const isImage = rawType === 'img' || (!rawType && trimmedBody.length < 500 && trimmedBody.match(/\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/i));
+
+            if (tableParts.includes(rawType)) {
+                if (rawType === 'table') {
                     if (Content_Body && Content_Body.includes('|')) {
                         const tempWrap = document.createElement('div');
                         tempWrap.innerHTML = parseMarkdownTable(Content_Body);
                         if (tempWrap.firstElementChild) {
                             const generatedTable = tempWrap.firstElementChild.querySelector('table');
-                            if (generatedTable) {
-                                generatedTable.id = 'glossary_' + Unique_ID;
-                                activeTable = generatedTable; 
-                                activeTableParent = generatedTable.querySelector('tbody') || generatedTable;
-                            }
-                            activeGlossaryCard.appendChild(tempWrap.firstElementChild);
+                            if (generatedTable) generatedTable.id = 'table_' + Unique_ID;
+                            activeCard.appendChild(tempWrap.firstElementChild);
                         }
                     } else {
-                        // Manual row-by-row assembly mode
                         const el = document.createElement('table');
-                        el.id = 'glossary_' + Unique_ID;
+                        el.id = 'table_' + Unique_ID;
                         el.className = 'glossary-table';
-                        
                         const wrap = document.createElement('div');
                         wrap.className = 'glossary-table-wrap';
                         wrap.appendChild(el);
-                        
-                        activeGlossaryCard.appendChild(wrap);
+                        activeCard.appendChild(wrap);
                         activeTable = el;
                         activeTableParent = el;
                     }
                     return;
                 }
 
-                // Handle table children (tr, td, thead, etc.)
-                const el = document.createElement(type);
-                el.id = 'glossary_' + Unique_ID;
-                if (!activeTable) return; // Prevent orphaned rows without a table parent
+                const el = document.createElement(rawType);
+                el.id = Unique_ID;
+                if (!activeTable) return;
                 
-                // Smart TFOOT Wrapping: Auto-wrap raw text in a full-spanning row and cell
-                if (type === 'tfoot' && Content_Body && !Content_Body.includes('<tr')) {
+                if (rawType === 'tfoot' && Content_Body && !Content_Body.includes('<tr')) {
                     el.innerHTML = `<tr><td colspan="100%" style="font-size: 12.5px; padding-top: 12px; border-bottom: none; color: var(--mid-gray);">${Content_Body.replace(/^#+\s/, '')}</td></tr>`;
                 } else {
                     el.innerHTML = Content_Body || '';
                 }
 
-                if (['thead', 'tbody', 'tfoot'].includes(type)) {
+                if (['thead', 'tbody', 'tfoot'].includes(rawType)) {
                     activeTable.appendChild(el);
                     activeTableParent = el;
-                } else if (type === 'tr') {
+                } else if (rawType === 'tr') {
                     (activeTableParent || activeTable).appendChild(el);
                     activeTr = el;
-                } else if (['td', 'th'].includes(type)) {
+                } else if (['td', 'th'].includes(rawType)) {
                     if (activeTr) activeTr.appendChild(el);
                 }
                 return;
             }
 
-            // All other structural/text elements
-            const textGroup = ['p', 'div', 'span', 'blockquote', 'nav', 'aside', 'h3', 'h4', 'h5', 'h6', 'hr', 'br', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'a', 'strong', 'em', 'i', 'b'];
-            const trimmedBody = Content_Body ? Content_Body.trim() : '';
-            const isImage = type === 'img' || (!type && trimmedBody.length < 500 && trimmedBody.match(/\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/i));
+            if (textGroup.includes(rawType) || isImage) {
+                const elementTag = isImage ? 'div' : rawType;
+                const el = document.createElement(elementTag);
+                el.id = Unique_ID;
+                if (isFancy) el.classList.add('fancy-style');
+                if (elementTag === 'h3') el.style.marginTop = '15px';
 
-            if (textGroup.includes(type) || isImage) {
-                const elementTag = isImage ? 'div' : type;
-                
-                if (isDataRouteOverride) {
-                    // VIP DATA ROUTE: Drop directly into the Glossary Card sequentially!
-                    if (!activeGlossaryCard) {
-                        activeGlossaryCard = document.createElement('div');
-                        activeGlossaryCard.className = 'card';
-                        glossaryContainer.appendChild(activeGlossaryCard);
-                    }
-                    
-                    const el = document.createElement(elementTag);
-                    el.id = 'glossary_text_' + Unique_ID; 
-                    
-                    if (elementTag === 'h3') el.style.marginTop = '15px';
+                // Automatically register H1 and H2s in the Active Section Index
+                if (isHeader && activeIndexDropdown) {
+                    const cleanTitle = Content_Body ? Content_Body.replace(/^#+\s/, '').trim() : 'Section';
+                    const opt = document.createElement('option');
+                    opt.value = Unique_ID;
+                    opt.innerText = cleanTitle;
+                    activeIndexDropdown.appendChild(opt);
 
-                    if (isImage) {
-                        el.innerHTML = `<img src="${trimmedBody}" alt="Graphic" style="max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; display: block;">`;
-                    } else if (['ul', 'ol'].includes(elementTag) && Content_Body && Content_Body.includes('\n')) {
-                        formatText(el, elementTag, Content_Body);
-                    } else if (!['hr', 'br'].includes(elementTag)) {
-                        el.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
-                    }
-                    
-                    // Pure sequential appending directly into the card
-                    activeGlossaryCard.appendChild(el);
-                    
-                } else {
-                    // STANDARD ROUTE: Drop into Service Data Card
-                    if (!activeServiceCard) {
-                        activeServiceCard = document.createElement('div');
-                        activeServiceCard.className = 'card animate-in delay-2';
-                        serviceContainer.appendChild(activeServiceCard);
-                    }
-
-                    const el = document.createElement(elementTag);
-                    el.id = 'service_' + Unique_ID; 
-                    if (isFancy) el.classList.add('fancy-style');
-                    
-                    if (elementTag === 'h3') el.style.marginTop = '15px';
-
-                    if (isImage) {
-                        el.innerHTML = `<img src="${trimmedBody}" alt="Graphic" style="max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; display: block;">`;
-                    } else if (['ul', 'ol'].includes(elementTag) && Content_Body && Content_Body.includes('\n')) {
-                        formatText(el, elementTag, Content_Body);
-                    } else if (!['hr', 'br'].includes(elementTag)) {
-                        el.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
-                    }
-                    appendToServiceCard(el);
+                    const li = document.createElement('li');
+                    li.style = 'margin-bottom: 8px; border-bottom: 1px dashed var(--light-gray); padding-bottom: 4px;';
+                    li.innerHTML = `<a href="#${Unique_ID}" style="text-decoration: none; color: var(--navy); font-weight: 600; font-size: 14px;">${cleanTitle}</a>`;
+                    activeIndexToc.appendChild(li);
                 }
+
+                if (isHeader) {
+                    el.className = 'card-title';
+                    el.style.border = 'none';
+                    el.style.marginBottom = '0';
+                }
+
+                if (isImage) {
+                    el.innerHTML = `<img src="${trimmedBody}" alt="Graphic" style="max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; display: block;">`;
+                } else if (['ul', 'ol'].includes(elementTag) && Content_Body && Content_Body.includes('\n')) {
+                    formatText(el, elementTag, Content_Body);
+                } else if (!['hr', 'br'].includes(elementTag)) {
+                    el.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
+                }
+
+                if (activeCard) activeCard.appendChild(el);
             }
         }
     });
@@ -711,56 +721,7 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
 
-/**
- * 4. Build Dynamic Glossary Index (Web Dropdown / Print TOC)
- */
-function buildGlossaryIndex(data) {
-    const dropdown = document.getElementById('glossary-dropdown');
-    const toc = document.getElementById('glossary-toc');
-    if (!dropdown || !toc) return;
-
-    // Get all generated H1 and H2 IDs that exist inside the glossary section
-    const glossaryH2s = document.querySelectorAll('#glossary h1, #glossary h2');
-    
-    glossaryH2s.forEach(h2 => {
-        const id = h2.id;
-        
-        // Find the matching text straight from the CSV data to avoid render race conditions!
-        const matchingData = data.find(item => item.Unique_ID === id);
-        
-        if (matchingData && matchingData.Content_Body) {
-            // Strip out markdown hashtags if they exist in the sheet
-            const title = matchingData.Content_Body.replace(/^#+\s/, '').trim();
-            
-            // Add to dropdown
-            const option = document.createElement('option');
-            option.value = id;
-            option.innerText = title;
-            dropdown.appendChild(option);
-
-            // Add to Print TOC
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="#${id}">${title}</a>`;
-            toc.appendChild(li);
-        }
-    });
-
-    // Handle dropdown selection to scroll to section
-    dropdown.addEventListener('change', (e) => {
-        const targetId = e.target.value;
-        if (targetId) {
-            const targetEl = document.getElementById(targetId);
-            if (targetEl) {
-                // Increased offset heavily to clear both the Top Nav AND the Sticky Glossary Dropdown
-                const yOffset = -240; 
-                const y = targetEl.getBoundingClientRect().top + window.scrollY + yOffset;
-                window.scrollTo({top: y, behavior: 'smooth'});
-            }
-            // Reset dropdown to default
-            dropdown.selectedIndex = 0;
-        }
-    });
-}
+// The Dynamic Index Builder has been fully integrated into the populateDOM function.
 
 /**
  * Print Failsafe: Force all kinetic numbers to their final values instantly before the print dialog opens
