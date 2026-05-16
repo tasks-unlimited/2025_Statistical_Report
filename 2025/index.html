@@ -544,18 +544,38 @@
             }
         </style>
 
-<div class="card animate-in delay-3 web-sat-iframe" style="padding:0; border: 6px solid var(--white); margin-bottom: 0;">
-            <div style="height: 600px; overflow: hidden; width: 100%;">
-                <iframe 
-                    id="client_satisfaction_iframe"
-                    src="" 
-                    width="100%" 
-                    height="100%" 
-                    style="border: none; background: #ffffff;" 
-                    title="Client Satisfaction Survey Results">
-                </iframe>
+<div class="demo-grid web-sat-iframe" style="margin-bottom: 24px;">
+            <div class="card animate-in delay-3" style="margin-bottom: 0;">
+                <div id="client_satisfaction_main_highlight_1_Header" class="card-title"></div>
+                <h5 id="client_satisfaction_main_highlight_1_Info_a" style="color: var(--teal);"></h5>
+                <p id="client_satisfaction_main_highlight_1_Info_b" style="font-size: 14px; margin-bottom: 0; color: var(--warm-gray);"></p>
             </div>
-            <p id="client_satisfaction_link_text" style="padding: 15px; margin: 0; font-size: 14px; color: var(--mid-gray); text-align: center; border-top: 1px solid var(--light-gray);"></p>
+            
+            <div class="card animate-in delay-4" style="margin-bottom: 0;">
+                <div id="client_satisfaction_main_highlight_2_Header" class="card-title"></div>
+                <h5 id="client_satisfaction_main_highlight_2_Info_a" style="color: var(--teal);"></h5>
+                <p id="client_satisfaction_main_highlight_2_Info_b" style="font-size: 14px; margin-bottom: 0; color: var(--warm-gray);"></p>
+            </div>
+            
+            <div class="card animate-in delay-5" style="margin-bottom: 0; display: flex; flex-direction: column;">
+                <div id="client_satisfaction_main_highlight_3_Header" class="card-title"></div>
+                
+                <style>
+                    #client_satisfaction_main_highlight_3_Info_a:empty, 
+                    #client_satisfaction_main_highlight_3_Info_b:empty { display: none !important; }
+                </style>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                    <h5 id="client_satisfaction_main_highlight_3_Info_a" style="flex: 1; min-width: 100px; color: var(--orange); margin: 0;"></h5>
+                    <h5 id="client_satisfaction_main_highlight_3_Info_b" style="flex: 1; min-width: 100px; color: var(--navy); margin: 0;"></h5>
+                </div>
+                
+                <p id="client_satisfaction_main_highlight_3_Info_c" style="font-size: 14px; margin-bottom: 0; margin-top: auto; color: var(--warm-gray);"></p>
+            </div>
+        </div>
+
+        <div class="web-sat-iframe animate-in delay-6" style="text-align: center;">
+            <p id="client_satisfaction_link_text" style="color: var(--white); font-weight: 600; margin-bottom: 12px;"></p>
+            <div id="client_satisfaction_data_link"></div>
         </div>
 
         <div class="card print-sat-qr" style="margin-bottom: 0;">
