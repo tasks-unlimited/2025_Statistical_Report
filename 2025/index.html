@@ -544,37 +544,40 @@
             }
         </style>
 
-<div class="demo-grid web-sat-iframe" style="margin-bottom: 24px;">
-            <div class="card animate-in delay-3" style="margin-bottom: 0;">
-                <div id="client_satisfaction_main_highlight_1_Header" class="card-title"></div>
-                <h5 id="client_satisfaction_main_highlight_1_Info_a" style="color: var(--teal);"></h5>
-                <p id="client_satisfaction_main_highlight_1_Info_b" style="font-size: 14px; margin-bottom: 0; color: var(--warm-gray);"></p>
+<div class="demo-grid" style="margin-bottom: 24px;">
+            <style>
+                .sat-card { text-align: center; display: flex; flex-direction: column; padding: 28px 24px !important; }
+                .sat-header { font-family: 'Montserrat', sans-serif; font-size: 18px !important; font-weight: 700 !important; color: var(--navy) !important; margin-bottom: 15px !important; border: none !important; padding: 0 !important; }
+                .sat-teal-text { color: var(--teal) !important; font-size: 15px !important; font-weight: 600 !important; margin-bottom: 15px !important; line-height: 1.5 !important; }
+                .sat-gray-text { color: var(--warm-gray) !important; font-size: 14px !important; margin-top: auto !important; }
+                #client_satisfaction_main_highlight_3_Info_a:empty, 
+                #client_satisfaction_main_highlight_3_Info_b:empty { display: none !important; }
+            </style>
+            
+            <div class="card animate-in delay-3 sat-card" style="margin-bottom: 0;">
+                <div id="client_satisfaction_main_highlight_1_Header" class="sat-header"></div>
+                <div id="client_satisfaction_main_highlight_1_Info_a" class="sat-teal-text"></div>
+                <div id="client_satisfaction_main_highlight_1_Info_b" class="sat-gray-text"></div>
             </div>
             
-            <div class="card animate-in delay-4" style="margin-bottom: 0;">
-                <div id="client_satisfaction_main_highlight_2_Header" class="card-title"></div>
-                <h5 id="client_satisfaction_main_highlight_2_Info_a" style="color: var(--teal);"></h5>
-                <p id="client_satisfaction_main_highlight_2_Info_b" style="font-size: 14px; margin-bottom: 0; color: var(--warm-gray);"></p>
+            <div class="card animate-in delay-4 sat-card" style="margin-bottom: 0;">
+                <div id="client_satisfaction_main_highlight_2_Header" class="sat-header"></div>
+                <div id="client_satisfaction_main_highlight_2_Info_a" class="sat-teal-text"></div>
+                <div id="client_satisfaction_main_highlight_2_Info_b" class="sat-gray-text"></div>
             </div>
             
-            <div class="card animate-in delay-5" style="margin-bottom: 0; display: flex; flex-direction: column;">
-                <div id="client_satisfaction_main_highlight_3_Header" class="card-title"></div>
-                
-                <style>
-                    #client_satisfaction_main_highlight_3_Info_a:empty, 
-                    #client_satisfaction_main_highlight_3_Info_b:empty { display: none !important; }
-                </style>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
-                    <h5 id="client_satisfaction_main_highlight_3_Info_a" style="flex: 1; min-width: 100px; color: var(--orange); margin: 0;"></h5>
-                    <h5 id="client_satisfaction_main_highlight_3_Info_b" style="flex: 1; min-width: 100px; color: var(--navy); margin: 0;"></h5>
+            <div class="card animate-in delay-5 sat-card" style="margin-bottom: 0;">
+                <div id="client_satisfaction_main_highlight_3_Header" class="sat-header"></div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px; text-align: left;">
+                    <div id="client_satisfaction_main_highlight_3_Info_a" style="flex: 1; color: var(--orange) !important; font-size: 13.5px !important; font-weight: 700 !important; line-height: 1.4 !important;"></div>
+                    <div id="client_satisfaction_main_highlight_3_Info_b" style="flex: 1; color: var(--navy) !important; font-size: 13.5px !important; font-weight: 700 !important; line-height: 1.4 !important;"></div>
                 </div>
-                
-                <p id="client_satisfaction_main_highlight_3_Info_c" style="font-size: 14px; margin-bottom: 0; margin-top: auto; color: var(--warm-gray);"></p>
+                <div id="client_satisfaction_main_highlight_3_Info_c" class="sat-gray-text"></div>
             </div>
         </div>
 
-        <div class="web-sat-iframe animate-in delay-6" style="text-align: center;">
-            <p id="client_satisfaction_link_text" style="color: var(--white); font-weight: 600; margin-bottom: 12px;"></p>
+        <div class="web-sat-iframe animate-in delay-6" style="text-align: center; margin-bottom: 24px;">
+            <div id="client_satisfaction_link_text" style="color: var(--white); font-weight: 600; margin-bottom: 12px; font-size: 15px;"></div>
             <div id="client_satisfaction_data_link"></div>
         </div>
 
