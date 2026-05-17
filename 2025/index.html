@@ -49,16 +49,17 @@
  line-height: 1.6;
  -webkit-font-smoothing: antialiased;
  }
- h1, h2, h3, h4, h5 {
+ h1, h2, h3, h4, h5, h6 {
  font-family: 'Montserrat', sans-serif;
- color: var(--navy);
  line-height: 1.25;
  margin-bottom: 10px;
  }
- h1 { font-size: 28px; font-weight: 800; }
- h2 { font-size: 22px; font-weight: 700; }
- h3 { font-size: 18px; font-weight: 700; margin-top: 20px;}
- h4 { font-size: 16px; font-weight: 600; margin-top: 15px;}
+ h1 { font-size: 37px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-top: 40px; margin-bottom: 20px; }
+ h2 { font-size: 24px; font-weight: 700; color: var(--navy); border-bottom: 2px solid var(--softest-gray); padding-bottom: 8px; margin-top: 20px; margin-bottom: 16px; }
+ h3 { font-size: 20px; font-weight: 600; color: var(--teal); margin-top: 20px; margin-bottom: 12px; }
+ h4 { font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 16px; margin-bottom: 8px; }
+ h5 { font-size: 14px; font-weight: 700; color: var(--warm-gray); text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: 8px; }
+ h6 { font-size: 12px; font-weight: 600; color: var(--mid-gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 12px; margin-bottom: 6px; }
  
  ul { margin-left: 20px; margin-bottom: 15px; }
  p { margin-bottom: 15px; }
@@ -397,14 +398,8 @@
 <nav class="top-nav" aria-label="Report navigation">
     <div class="top-nav-inner">
         <div id="top_nav_text" class="top-nav-brand">Tasks Unlimited · Annual Statistical Report</div>
-    <div class="top-nav-links">
-      <a id="top_nav_button_1" href="#at-a-glance" style="background: var(--navy); color: var(--white); border-color: var(--navy);">At A Glance</a>
-      <a id="top_nav_button_2" href="#service-data" style="background: var(--teal); color: var(--white); border-color: var(--teal);">Service Data</a>
-      <a id="top_nav_button_3" href="#glossary" style="background: var(--orange); color: var(--white); border-color: var(--orange);">Glossary</a>
-      <button id="glossaryIndexToggle" class="top-nav-toggle" type="button" aria-controls="glossary-index" aria-expanded="true">
-        Index <span class="chev">▾</span>
-      </button>
-    </div>
+    <div id="dynamic-top-nav-links" class="top-nav-links">
+      </div>
   </div>
 </nav>
 
