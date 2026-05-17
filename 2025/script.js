@@ -273,31 +273,79 @@ function populateDOM(data) {
         const { Unique_ID, Element_Type, Content_Body } = item;
         if (!Unique_ID) return;
 
-        // 1. Hardcoded Iframe Hooks
+        let rawType = (Element_Type || '').toLowerCase();
+        let isFancy = false;
+        if (rawType.startsWith('fancy')) {
+            isFancy = true;
+            rawType = rawType.replace('fancy', '');
+        }
+
+        // --- 1. GLOBAL INTERCEPTS (Top Nav Banners & Hardcoded Hooks) ---
+        
         if (Unique_ID === 'client_satisfaction_qr_code') {
             const qrImg = document.getElementById('client_satisfaction_qr_img');
             if (qrImg && Content_Body.trim() !== '') qrImg.src = Content_Body.trim();
             return;
         }
 
-        // 2. Identify the exact moment the Sequential Generation begins
+        // Always intercept section1-5 dynamically from ANYWHERE in the sheet
+        if (sectionStyles[rawType]) {
+            const cleanTitle = Content_Body ? Content_Body.replace(/^#+\s/, '').trim() : 'Section';
+            
+            // Generate the dynamic Top Nav Pill Button
+            const topNavContainer = document.getElementById('dynamic-top-nav-links');
+            if (topNavContainer) {
+                const navBtn = document.createElement('a');
+                navBtn.href = '#' + Unique_ID;
+                navBtn.innerText = cleanTitle;
+                navBtn.style = sectionStyles[rawType] + ' color: var(--white); border: none;';
+                topNavContainer.appendChild(navBtn);
+            }
+
+            if (!isDynamicZone) {
+                // Before dynamic mode: Drop invisible anchor to keep Hero clean
+                const anchor = document.createElement('div');
+                anchor.id = Unique_ID;
+                anchor.style = 'position: absolute; top: 0;'; 
+                document.body.prepend(anchor);
+                return; // Suppress giant banner
+            } else {
+                // Inside dynamic mode: Generate the giant print-friendly banner
+                activeSectionWrapper = document.createElement('div');
+                activeSectionWrapper.style.position = 'relative'; 
+                dynamicContainer.appendChild(activeSectionWrapper);
+                
+                // Clear the trackers so they don't bleed
+                activeIndexDropdown = null;
+                activeIndexToc = null;
+                activeCard = null; 
+
+                const banner = document.createElement('div');
+                banner.className = 'print-page-break animate-in delay-1';
+                banner.style = `${sectionStyles[rawType]} padding: 30px 24px; border-radius: 20px; margin: 40px 0 32px; text-align: center; box-shadow: 0 8px 24px rgba(36,72,118,0.25);`;
+                
+                const title = document.createElement('h2');
+                title.id = Unique_ID;
+                title.style = 'font-size: 36px; color: var(--white); margin-bottom: 0; font-weight: 800; letter-spacing: 1px; border:none;';
+                title.innerHTML = cleanTitle;
+                
+                banner.appendChild(title);
+                activeSectionWrapper.appendChild(banner);
+                return;
+            }
+        }
+
+        // --- 2. DYNAMIC ZONE MARKER ---
         if (Unique_ID === 'begin_dynamic_building_mode') {
             isDynamicZone = true;
             return;
         }
 
-        // 3. Populate existing hardcoded elements (Hero, At-A-Glance)
+        // --- 3. HARDCODED ELEMENTS ---
         if (!isDynamicZone || document.getElementById(Unique_ID)) {
             let existingElement = document.getElementById(Unique_ID);
             if (!existingElement) return;
 
-            let rawType = (Element_Type || '').toLowerCase();
-            let isFancy = false;
-            if (rawType.startsWith('fancy')) {
-                isFancy = true;
-                rawType = rawType.replace('fancy', '');
-            }
-            const type = rawType;
             if (isFancy) existingElement.classList.add('fancy-style');
 
             if (kineticIds.includes(Unique_ID)) {
@@ -319,14 +367,12 @@ function populateDOM(data) {
             const standardTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'br', 'hr', 'nav', 'aside', 'blockquote', 'dl', 'dt', 'dd'];
             const trimmedBody = Content_Body ? Content_Body.trim() : '';
             
-            // Speed Optimization: Only run the regex check if the text is short enough to actually be a URL
-            const isImage = type === 'img' || (trimmedBody.length < 500 && trimmedBody.match(/\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/i));
+            const isImage = rawType === 'img' || (trimmedBody.length < 500 && trimmedBody.match(/\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/i));
             
-            // Shield hardcoded structural IDs so they never lose their CSS shapes/styles
             const protectedIds = ['top_nav_button_1', 'top_nav_button_2', 'top_nav_button_3', 'title', 'top_nav_text'];
 
-            if (standardTypes.includes(type) && existingElement.tagName.toLowerCase() !== type && !protectedIds.includes(Unique_ID)) {
-                const newElement = document.createElement(type);
+            if (standardTypes.includes(rawType) && existingElement.tagName.toLowerCase() !== rawType && !protectedIds.includes(Unique_ID)) {
+                const newElement = document.createElement(rawType);
                 Array.from(existingElement.attributes).forEach(attr => newElement.setAttribute(attr.name, attr.value));
                 existingElement.replaceWith(newElement);
                 existingElement = newElement;
@@ -338,9 +384,9 @@ function populateDOM(data) {
                 } else {
                     existingElement.innerHTML = `<img src="${trimmedBody}" alt="Graphic" style="max-height: 180px; display: block; margin: 0 auto 12px auto;">`;
                 }
-            } else if (standardTypes.includes(type)) {
+            } else if (standardTypes.includes(rawType)) {
                 existingElement.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
-            } else if (type === 'table') {
+            } else if (rawType === 'table') {
                 if (Unique_ID === 'enrollment_by_county_table') {
                     existingElement.innerHTML = parseBarChart(Content_Body);
                 } else if (Unique_ID === 'number_of_enrollments_table') {
@@ -348,9 +394,9 @@ function populateDOM(data) {
                 } else {
                     existingElement.innerHTML = parseMarkdownTable(Content_Body);
                 }
-            } else if (type === 'ul' || type === 'ol') {
+            } else if (rawType === 'ul' || rawType === 'ol') {
                 existingElement.innerHTML = ''; 
-                formatText(existingElement, type, Content_Body);
+                formatText(existingElement, rawType, Content_Body);
             } else {
                 existingElement.innerHTML = Content_Body || '';
             }
@@ -358,50 +404,16 @@ function populateDOM(data) {
             if (!isDynamicZone) return;
         }
 
-        // 4. THE DYNAMIC BRAIN (Pure Sequential Appending)
+        // --- 4. THE DYNAMIC BRAIN (Pure Sequential Architecture) ---
         if (isDynamicZone && dynamicContainer) {
-            let rawType = (Element_Type || '').toLowerCase();
-            let isFancy = false;
             
-            if (rawType.startsWith('fancy')) {
-                isFancy = true;
-                rawType = rawType.replace('fancy', '');
-            }
-
-            // --- A. Dynamic Banners (section1-5) ---
-            if (sectionStyles[rawType]) {
-                // Creates a new bounded wrapper for the section to lock the sticky Index
-                activeSectionWrapper = document.createElement('div');
-                activeSectionWrapper.style.position = 'relative'; 
-                dynamicContainer.appendChild(activeSectionWrapper);
-                
-                // Reset the active trackers so they don't bleed into the next section
-                activeIndexDropdown = null;
-                activeIndexToc = null;
-                activeCard = null;
-
-                const banner = document.createElement('div');
-                banner.className = 'print-page-break animate-in delay-1';
-                banner.style = `${sectionStyles[rawType]} padding: 30px 24px; border-radius: 20px; margin: 40px 0 32px; text-align: center; box-shadow: 0 8px 24px rgba(36,72,118,0.25);`;
-                
-                const title = document.createElement('h2');
-                title.id = Unique_ID;
-                title.style = 'font-size: 36px; color: var(--white); margin-bottom: 0; font-weight: 800; letter-spacing: 1px; border:none;';
-                title.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
-                
-                banner.appendChild(title);
-                activeSectionWrapper.appendChild(banner);
-                return;
-            }
-
-            // Fallback: If no section wrapper exists yet, create an invisible one
             if (!activeSectionWrapper) {
                 activeSectionWrapper = document.createElement('div');
                 activeSectionWrapper.style.position = 'relative';
                 dynamicContainer.appendChild(activeSectionWrapper);
             }
 
-            // --- B. The Sweeping Index ---
+            // --- A. The Sweeping Index ---
             if (rawType === 'index') {
                 const indexCard = document.createElement('div');
                 indexCard.className = 'card glossary-index-card animate-in delay-2';
@@ -425,7 +437,6 @@ function populateDOM(data) {
                 defaultOpt.innerText = 'Select a Topic...';
                 select.appendChild(defaultOpt);
                 
-                // Connect Dropdown scrolling
                 select.addEventListener('change', (e) => {
                     const targetId = e.target.value;
                     if (targetId) {
@@ -451,23 +462,29 @@ function populateDOM(data) {
 
                 activeSectionWrapper.appendChild(indexCard);
                 
-                // Arm the index tracking radar for the current section
+                // Arm the index tracking radar
                 activeIndexDropdown = select;
                 activeIndexToc = tocUl;
                 activeCard = null; 
                 return;
             }
 
-            // --- C. White Cards (Triggered by H1/H2) ---
+            // --- B. Floating H1 vs White Card H2 Architecture ---
             const isHeader = rawType === 'h1' || rawType === 'h2';
-            if (isHeader || (!activeCard && rawType !== 'table' && !['thead','tbody','tr','td','th','tfoot'].includes(rawType))) {
+            
+            if (rawType === 'h1') {
+                // H1 triggers a background float (breaks out of cards)
+                activeCard = null; 
+                activeTable = null;
+            } else if (rawType === 'h2') {
+                // H2 triggers a brand new crisp white card
                 activeCard = document.createElement('div');
                 activeCard.className = 'card animate-in delay-2';
                 activeSectionWrapper.appendChild(activeCard);
                 activeTable = null; 
             }
 
-            // --- D. Core Content Population ---
+            // --- C. Core Content Population ---
             const tableParts = ['table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th'];
             const textGroup = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'blockquote', 'ul', 'ol', 'li', 'hr', 'br', 'a', 'strong', 'em'];
             const trimmedBody = Content_Body ? Content_Body.trim() : '';
@@ -481,7 +498,8 @@ function populateDOM(data) {
                         if (tempWrap.firstElementChild) {
                             const generatedTable = tempWrap.firstElementChild.querySelector('table');
                             if (generatedTable) generatedTable.id = 'table_' + Unique_ID;
-                            activeCard.appendChild(tempWrap.firstElementChild);
+                            if (activeCard) activeCard.appendChild(tempWrap.firstElementChild);
+                            else activeSectionWrapper.appendChild(tempWrap.firstElementChild);
                         }
                     } else {
                         const el = document.createElement('table');
@@ -490,7 +508,10 @@ function populateDOM(data) {
                         const wrap = document.createElement('div');
                         wrap.className = 'glossary-table-wrap';
                         wrap.appendChild(el);
-                        activeCard.appendChild(wrap);
+                        
+                        if (activeCard) activeCard.appendChild(wrap);
+                        else activeSectionWrapper.appendChild(wrap);
+                        
                         activeTable = el;
                         activeTableParent = el;
                     }
@@ -524,9 +545,8 @@ function populateDOM(data) {
                 const el = document.createElement(elementTag);
                 el.id = Unique_ID;
                 if (isFancy) el.classList.add('fancy-style');
-                if (elementTag === 'h3') el.style.marginTop = '15px';
 
-                // Automatically register H1 and H2s in the Active Section Index
+                // Track H1 and H2s in the Active Section Index
                 if (isHeader && activeIndexDropdown) {
                     const cleanTitle = Content_Body ? Content_Body.replace(/^#+\s/, '').trim() : 'Section';
                     const opt = document.createElement('option');
@@ -540,10 +560,15 @@ function populateDOM(data) {
                     activeIndexToc.appendChild(li);
                 }
 
-                if (isHeader) {
+                if (isHeader && rawType !== 'h1') {
                     el.className = 'card-title';
                     el.style.border = 'none';
                     el.style.marginBottom = '0';
+                }
+
+                if (rawType === 'h1') {
+                    // Give floating H1s an entrance animation
+                    el.classList.add('animate-in', 'delay-2');
                 }
 
                 if (isImage) {
@@ -554,7 +579,13 @@ function populateDOM(data) {
                     el.innerHTML = Content_Body ? Content_Body.replace(/^#+\s/, '') : '';
                 }
 
-                if (activeCard) activeCard.appendChild(el);
+                if (activeCard) {
+                    activeCard.appendChild(el);
+                } else {
+                    // Floating items get slight padding to snap to the grid beautifully
+                    el.style.padding = '0 12px';
+                    activeSectionWrapper.appendChild(el);
+                }
             }
         }
     });
