@@ -546,9 +546,9 @@ function populateDOM(data) {
                 el.id = Unique_ID;
                 if (isFancy) el.classList.add('fancy-style');
 
-                // Track H1 and H2s in the Active Section Index
-                if (isHeader && activeIndexDropdown) {
-                    const cleanTitle = Content_Body ? Content_Body.replace(/^#+\s/, '').trim() : 'Section';
+                // Track H1 and H2s in the Active Section Index (Skip if Content_Body is empty)
+                if (isHeader && activeIndexDropdown && Content_Body && Content_Body.trim() !== '') {
+                    const cleanTitle = Content_Body.replace(/^#+\s/, '').trim();
                     const opt = document.createElement('option');
                     opt.value = Unique_ID;
                     opt.innerText = cleanTitle;
